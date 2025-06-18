@@ -411,10 +411,16 @@ export default function Component() {
   const [isContactModalOpen, setIsContactModalOpen] = useState(false)
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [isClient, setIsClient] = useState(false)
 
-  // A/B Testing hooks
+  // A/B Testing hooks - solo se ejecutan en el cliente
   const heroCTATest = useABTest('hero-cta-test')
   const pricingTest = useABTest('pricing-display-test')
+
+  // Efecto para detectar cuando estamos en el cliente
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
 
   // Función para abrir WhatsApp
   const openWhatsApp = () => {
@@ -558,11 +564,11 @@ export default function Component() {
                     <DialogTrigger asChild>
                       <Button
                         size="lg"
-                        className={`${heroCTATest.config.buttonColor || 'bg-secondary'} hover:bg-secondary/90 text-accent font-bold`}
-                        onClick={() => heroCTATest.track('hero_cta_click')}
+                        className={`${isClient ? (heroCTATest.config.buttonColor || 'bg-secondary') : 'bg-secondary'} hover:bg-secondary/90 text-accent font-bold`}
+                        onClick={() => isClient && heroCTATest.track('hero_cta_click')}
                       >
                         <Target className="mr-2 h-5 w-5" />
-                        {heroCTATest.config.buttonText || 'Conocé el Plan'}
+                        {isClient ? (heroCTATest.config.buttonText || 'Consulta Gratis') : 'Consulta Gratis'}
                       </Button>
                     </DialogTrigger>
                     <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
@@ -629,7 +635,7 @@ export default function Component() {
                   </div>
                   <div className="bg-white/20 rounded-lg p-3">
                     <p className="text-sm font-bold">📈 {service.results}</p>
-                    {pricingTest.config.showPricing !== false && (
+                    {(!isClient || pricingTest.config.showPricing !== false) && (
                       <p className="text-xs opacity-90 font-medium">💰 {service.price} | 🕒 {service.duration}</p>
                     )}
                   </div>

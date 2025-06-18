@@ -253,22 +253,30 @@ export class ABTestManager {
   }
 }
 
-// Hook para usar A/B testing en React
+// Hook para usar A/B testing en React con soporte para hidratación
 export function useABTest(testId: string) {
   const manager = ABTestManager.getInstance()
-  
-  // Cargar variantes almacenadas al inicializar
-  if (typeof window !== 'undefined') {
-    manager.loadStoredVariants()
+
+  // Solo ejecutar en el cliente para evitar problemas de hidratación
+  if (typeof window === 'undefined') {
+    return {
+      variant: null,
+      config: {},
+      track: () => {},
+      isInTest: false
+    }
   }
-  
+
+  // Cargar variantes almacenadas al inicializar
+  manager.loadStoredVariants()
+
   const variant = manager.getVariant(testId)
   const config = manager.getTestConfig(testId)
-  
+
   const track = (event: string, value?: number) => {
     manager.trackEvent(testId, event, value)
   }
-  
+
   return {
     variant,
     config,
