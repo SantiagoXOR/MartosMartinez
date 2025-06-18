@@ -1,3 +1,7 @@
+/* Importar Google Fonts para alternativas a Myriad Pro */
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,300;0,400;0,600;0,700;0,900;1,300;1,400;1,600;1,700;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -55,6 +59,124 @@
   }
   body {
     @apply bg-background text-foreground;
-    font-family: "Myriad Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    font-family: "Myriad Pro", "Source Sans Pro", "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    font-feature-settings: "kern" 1, "liga" 1;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* Utilidades para balance de texto */
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .text-pretty {
+    text-wrap: pretty;
+  }
+}
+
+/* Sistema de jerarquía tipográfica personalizada */
+@layer components {
+  /* Títulos principales */
+  .heading-hero {
+    @apply text-4xl lg:text-6xl font-black leading-tight tracking-tight;
+    font-family: "Myriad Pro", "Source Sans Pro", "Open Sans", sans-serif;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+  }
+
+  .heading-section {
+    @apply text-3xl lg:text-4xl font-bold leading-tight tracking-tight;
+    font-family: "Myriad Pro", "Source Sans Pro", "Open Sans", sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  .heading-card {
+    @apply text-xl lg:text-2xl font-bold leading-snug;
+    font-family: "Myriad Pro", "Source Sans Pro", "Open Sans", sans-serif;
+    font-weight: 700;
+  }
+
+  .heading-small {
+    @apply text-lg font-semibold leading-snug;
+    font-family: "Myriad Pro", "Source Sans Pro", "Open Sans", sans-serif;
+    font-weight: 600;
+  }
+
+  /* Subtítulos */
+  .subheading-large {
+    @apply text-xl lg:text-2xl font-medium leading-relaxed;
+    font-family: "Myriad Pro", "Source Sans Pro", "Open Sans", sans-serif;
+    font-weight: 500;
+  }
+
+  .subheading-medium {
+    @apply text-lg font-medium leading-relaxed;
+    font-family: "Myriad Pro", "Source Sans Pro", "Open Sans", sans-serif;
+    font-weight: 500;
+  }
+
+  /* Texto de cuerpo */
+  .body-large {
+    @apply text-lg leading-relaxed;
+    font-family: "Myriad Pro", "Source Sans Pro", "Open Sans", sans-serif;
+    font-weight: 400;
+  }
+
+  .body-medium {
+    @apply text-base leading-relaxed;
+    font-family: "Myriad Pro", "Source Sans Pro", "Open Sans", sans-serif;
+    font-weight: 400;
+  }
+
+  .body-small {
+    @apply text-sm leading-relaxed;
+    font-family: "Myriad Pro", "Source Sans Pro", "Open Sans", sans-serif;
+    font-weight: 400;
+  }
+
+  /* Texto especializado */
+  .text-emphasis {
+    @apply font-semibold;
+    font-family: "Myriad Pro", "Source Sans Pro", "Open Sans", sans-serif;
+    font-weight: 600;
+  }
+
+  .text-strong {
+    @apply font-bold;
+    font-family: "Myriad Pro", "Source Sans Pro", "Open Sans", sans-serif;
+    font-weight: 700;
+  }
+
+  .text-light {
+    @apply font-light;
+    font-family: "Myriad Pro", "Source Sans Pro", "Open Sans", sans-serif;
+    font-weight: 300;
+  }
+
+  /* Texto de interfaz */
+  .ui-label {
+    @apply text-sm font-medium tracking-wide uppercase;
+    font-family: "Myriad Pro", "Source Sans Pro", "Open Sans", sans-serif;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+  }
+
+  .ui-caption {
+    @apply text-xs font-medium;
+    font-family: "Myriad Pro", "Source Sans Pro", "Open Sans", sans-serif;
+    font-weight: 500;
+  }
+
+  /* Botones */
+  .button-text {
+    @apply font-semibold tracking-wide;
+    font-family: "Myriad Pro", "Source Sans Pro", "Open Sans", sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.025em;
   }
 }

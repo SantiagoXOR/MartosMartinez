@@ -35,6 +35,8 @@ import {
   Menu,
   X,
   ArrowRight,
+  ChevronDown,
+  Eye,
 } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
@@ -407,11 +409,150 @@ function ScheduleModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => vo
   )
 }
 
+// Componente para mostrar detalles de cada etapa en popup
+function StageDetailsModal({
+  isOpen,
+  onClose,
+  stageNumber
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  stageNumber: number | null;
+}) {
+  if (!stageNumber) return null;
+
+  const stageData = {
+    1: {
+      title: "Branding & Posicionamiento",
+      subtitle: "Construimos tu identidad digital desde cero",
+      actions: [
+        "Envío de contrato y método de pago",
+        "Creación de grupo de WhatsApp y minuta inicial",
+        "Envío de formularios: público objetivo, propuesta de valor, identidad visual",
+        "Análisis de estado de cuentas, accesos y conexión con administrador Meta",
+        "Desarrollo de identidad visual: logo, paleta, tipografía, moodboard",
+        "Optimización o creación de perfiles en redes sociales",
+        "Configuración de seguridad, biografías, links y gráficas"
+      ],
+      color: "from-blue-ribbon-600 to-blue-ribbon-700"
+    },
+    2: {
+      title: "Captación de Prospectos",
+      subtitle: "Generamos leads calificados para tu negocio",
+      actions: [
+        "Planificación mensual de campañas publicitarias",
+        "Diseño de anuncios según etapa del embudo (TOFU, MOFU, BOFU)",
+        "Segmentación basada en públicos objetivos definidos",
+        "Diseño de piezas gráficas (flyers, reels, stories)",
+        "Calendarización y seguimiento diario de anuncios",
+        "Reportes periódicos con métricas, ROI, CPL",
+        "Gestión de leads en planilla compartida",
+        "Asesoramiento en respuesta rápida y seguimiento"
+      ],
+      color: "from-blue-ribbon-700 to-blue-ribbon-800"
+    },
+    3: {
+      title: "Fidelización & Referidos",
+      subtitle: "Convertimos clientes en embajadores de tu marca",
+      actions: [
+        "Implementación de WhatsApp Business: etiquetas, catálogos, respuestas",
+        "Segmentación de contactos, descarga y organización en planilla",
+        "Diseño y programación de campañas personalizadas",
+        "Calendarización según tipo de contacto (prospecto, referido, cliente activo)",
+        "Apoyo para publicar propiedades en Facebook Marketplace",
+        "Atención diaria, soporte técnico y coordinación continua"
+      ],
+      color: "from-blue-ribbon-800 to-blue-ribbon-900"
+    }
+  };
+
+  const stage = stageData[stageNumber as keyof typeof stageData];
+
+  return (
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+        <DialogHeader>
+          <div className={`bg-gradient-to-r ${stage.color} text-white p-6 -m-6 mb-6 rounded-t-lg`}>
+            <div>
+              <Badge className="bg-white/20 text-white border-0 mb-3">
+                Etapa {stageNumber}
+              </Badge>
+              <DialogTitle className="text-2xl font-bold mb-2">
+                {stage.title}
+              </DialogTitle>
+              <p className="text-blue-ribbon-100 text-lg">
+                {stage.subtitle}
+              </p>
+            </div>
+          </div>
+        </DialogHeader>
+
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">
+            Todas las acciones incluidas en este sprint:
+          </h3>
+
+          <div className="space-y-3">
+            {stage.actions.map((action, index) => (
+              <div key={index} className="flex items-start p-4 bg-gray-50 rounded-lg border border-gray-200">
+                <div className="flex-shrink-0 w-8 h-8 bg-blue-ribbon-100 rounded-full flex items-center justify-center mr-4">
+                  <span className="text-blue-ribbon-700 font-semibold text-sm">
+                    {index + 1}
+                  </span>
+                </div>
+                <div className="flex-1">
+                  <p className="text-gray-800 font-medium leading-relaxed">
+                    {action}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-8 p-6 bg-blue-ribbon-50 rounded-lg border border-blue-ribbon-200">
+            <div className="flex items-center mb-3">
+              <CheckCircle className="h-5 w-5 text-blue-ribbon-600 mr-2" />
+              <h4 className="font-semibold text-blue-ribbon-800">
+                ¿Listo para implementar esta etapa?
+              </h4>
+            </div>
+            <p className="text-blue-ribbon-700 text-sm mb-4">
+              Cada acción está diseñada para maximizar resultados y generar un impacto medible en tu negocio.
+            </p>
+            <div className="flex gap-3">
+              <Button
+                className="bg-blue-ribbon-700 hover:bg-blue-ribbon-800 text-white"
+                onClick={() => {
+                  onClose();
+                  // Aquí podrías abrir el modal de contacto o redirigir a WhatsApp
+                }}
+              >
+                <MessageCircle className="h-4 w-4 mr-2" />
+                Consultar por esta etapa
+              </Button>
+              <Button
+                variant="outline"
+                className="border-blue-ribbon-300 text-blue-ribbon-700 hover:bg-blue-ribbon-50"
+                onClick={onClose}
+              >
+                Cerrar
+              </Button>
+            </div>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  )
+}
+
 export default function Component() {
   const [isContactModalOpen, setIsContactModalOpen] = useState(false)
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isClient, setIsClient] = useState(false)
+
+  // Estado para controlar qué popup de detalles está abierto
+  const [detailsModalOpen, setDetailsModalOpen] = useState<number | null>(null)
 
   // A/B Testing hooks - solo se ejecutan en el cliente
   const heroCTATest = useABTest('hero-cta-test')
@@ -458,25 +599,25 @@ export default function Component() {
           <nav className="hidden md:flex space-x-6">
             <Link
               href="#servicios"
-              className="text-white/80 hover:text-white transition-colors font-medium hover:scale-105 transform duration-200"
+              className="text-white/80 hover:text-white transition-all duration-300 font-medium hover:scale-105 hover:drop-shadow-sm"
             >
               Servicios
             </Link>
             <Link
               href="#testimonios"
-              className="text-white/80 hover:text-white transition-colors font-medium hover:scale-105 transform duration-200"
+              className="text-white/80 hover:text-white transition-all duration-300 font-medium hover:scale-105 hover:drop-shadow-sm"
             >
               Testimonios
             </Link>
             <Link
               href="#contacto"
-              className="text-white/80 hover:text-white transition-colors font-medium hover:scale-105 transform duration-200"
+              className="text-white/80 hover:text-white transition-all duration-300 font-medium hover:scale-105 hover:drop-shadow-sm"
             >
               Contacto
             </Link>
             <Button
               size="sm"
-              className="bg-secondary hover:bg-secondary/90 text-accent font-bold"
+              className="bg-cyan-500 text-white hover:bg-cyan-600 font-bold transition-all duration-300"
               onClick={() => setIsContactModalOpen(true)}
             >
               Consulta Gratis
@@ -528,7 +669,7 @@ export default function Component() {
                 </div>
               </Link>
               <Button
-                className="w-full bg-blue-ribbon-700 hover:bg-blue-ribbon-800 text-white font-bold"
+                className="w-full bg-cyan-500 text-white hover:bg-cyan-600 font-bold transition-all duration-300"
                 onClick={() => {
                   setIsContactModalOpen(true)
                   setIsMobileMenuOpen(false)
@@ -543,32 +684,31 @@ export default function Component() {
       </header>
 
       {/* Bento Grid Layout */}
-      <main id="main-content" className="container mx-auto px-4 py-8 max-w-7xl">
+      <main id="main-content" className="container mx-auto px-4 sm:px-6 py-4 sm:py-8 max-w-7xl">
         {/* Hero Section - Large Card */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-6">
-          <Card className="lg:col-span-8 bg-gradient-to-br from-blue-ribbon-700 to-blue-ribbon-800 text-white border-0 overflow-hidden relative animate-in fade-in slide-in-from-left duration-700">
-            <CardContent className="p-8 lg:p-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 mb-6 sm:mb-8">
+          <Card className="lg:col-span-9 bg-gradient-to-br from-blue-ribbon-700 to-blue-ribbon-800 text-white border-0 overflow-hidden relative animate-in fade-in slide-in-from-left duration-700 drop-shadow-2xl ring-1 ring-white/20">
+            <CardContent className="p-6 sm:p-8 lg:p-12">
               <div className="relative z-10">
-                <Badge className="bg-secondary/20 text-secondary border-secondary/30 mb-4 font-semibold">
+                <Badge className="bg-secondary/20 text-secondary border-secondary/30 mb-4 ui-label">
                   Marketing Inmobiliario Especializado
                 </Badge>
-                <h1 className="text-3xl lg:text-5xl font-bold mb-4 leading-tight">
-                  🎯 Potenciá tu Marca Inmobiliaria en <span className="text-secondary">3 pasos</span>
+                <h1 className="heading-hero mb-4 text-balance">
+                  Potenciá tu marca inmobiliaria en <span className="text-secondary">3 pasos</span>
                 </h1>
-                <p className="text-lg text-blue-ribbon-100 mb-8 max-w-2xl font-medium">
-                  Te ayudamos a posicionarte, captar prospectos y fidelizar clientes con una estrategia digital hecha
-                  para vos.
+                <p className="subheading-large text-white/90 mb-8 max-w-2xl text-pretty">
+                  Una estrategia digital especializada para <strong className="text-secondary text-emphasis">captar, posicionar y fidelizar</strong> clientes
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4">
                   <Dialog open={isContactModalOpen} onOpenChange={setIsContactModalOpen}>
                     <DialogTrigger asChild>
                       <Button
                         size="lg"
-                        className={`${isClient ? (heroCTATest.config.buttonColor || 'bg-secondary') : 'bg-secondary'} hover:bg-secondary/90 text-accent font-bold`}
+                        className={`${isClient ? (heroCTATest.config.buttonColor || 'bg-secondary') : 'bg-secondary'} hover:bg-secondary/90 text-accent button-text`}
                         onClick={() => isClient && heroCTATest.track('hero_cta_click')}
                       >
                         <Target className="mr-2 h-5 w-5" />
-                        {isClient ? (heroCTATest.config.buttonText || 'Consulta Gratis') : 'Consulta Gratis'}
+                        {isClient ? (heroCTATest.config.buttonText || 'Quiero conocer el plan') : 'Quiero conocer el plan'}
                       </Button>
                     </DialogTrigger>
                     <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
@@ -584,11 +724,11 @@ export default function Component() {
                   <Button
                     size="lg"
                     variant="outline"
-                    className="border-white/30 text-white hover:bg-white/10 font-semibold"
+                    className="bg-white text-blue-800 border-white hover:bg-blue-100 font-semibold transition-all duration-300"
                     onClick={() => setIsScheduleModalOpen(true)}
                   >
                     <Calendar className="mr-2 h-5 w-5" />
-                    Agendá tu llamada
+                    Agendá una llamada
                   </Button>
                 </div>
               </div>
@@ -596,296 +736,530 @@ export default function Component() {
             </CardContent>
           </Card>
 
-          <Card className="lg:col-span-4 bg-gradient-to-br from-secondary to-secondary/80 text-accent border-0 animate-in fade-in slide-in-from-right duration-700 delay-200">
-            <CardContent className="p-6 h-full flex flex-col justify-center">
+          <Card className="lg:col-span-3 bg-gradient-to-br from-secondary to-secondary/80 text-accent border-0 animate-in fade-in slide-in-from-right duration-700 delay-200 drop-shadow-lg">
+            <CardContent className="p-4 h-full flex flex-col justify-center">
               <div className="text-center">
-                <Globe className="h-16 w-16 mx-auto mb-4 text-accent" />
-                <h3 className="text-3xl font-bold mb-2">+85%</h3>
-                <p className="text-accent/80 font-medium">de los compradores comienzan online</p>
+                <Globe className="h-12 w-12 mx-auto mb-3 text-accent" />
+                <h3 className="text-2xl font-bold mb-1">+85%</h3>
+                <p className="text-accent/80 font-medium text-sm">comienza online</p>
               </div>
             </CardContent>
           </Card>
         </div>
 
-        {/* Services Grid */}
-        <section id="servicios" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
-          <h2 className="sr-only">Nuestros Servicios de Marketing Inmobiliario</h2>
-          {getServicesByOrder().map((service, index) => {
-            const IconComponent = service.icon === 'Megaphone' ? Megaphone :
-                                service.icon === 'Target' ? Target : Heart
-            return (
-              <Card key={service.id} className={`bg-gradient-to-br ${service.color} text-white border-0 hover:scale-105 hover:shadow-2xl transition-all duration-300 group cursor-pointer`}>
-                <CardHeader className="pb-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <Badge className="bg-white/20 text-white border-0 font-semibold group-hover:bg-white/30 transition-colors">
-                      Etapa {service.order}
-                    </Badge>
-                    <IconComponent className="h-8 w-8 group-hover:scale-110 transition-transform duration-300" />
-                  </div>
-                  <CardTitle className="text-xl font-bold">{service.title}</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="space-y-2 text-sm font-medium">
-                    {service.features.map((feature, featureIndex) => (
-                      <div key={featureIndex} className="flex items-center space-x-2">
-                        <CheckCircle className="h-4 w-4 flex-shrink-0" />
-                        <span>{feature}</span>
+        {/* Plan Overview - 3 Steps Summary - Simplified */}
+        <section className="mb-8">
+          <div className="text-center mb-8">
+            <h2 className="heading-section text-white mb-4 text-balance">
+              Nuestro Sistema en <span className="text-secondary">3 Etapas</span>
+            </h2>
+            <p className="body-large text-slate-200 max-w-2xl mx-auto text-pretty">
+              Un proceso probado que transforma tu presencia digital
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-5xl mx-auto">
+            {getServicesByOrder().map((service, index) => {
+              const IconComponent = service.icon === 'Megaphone' ? Megaphone :
+                                  service.icon === 'Target' ? Target : Heart
+              return (
+                <div key={service.id} className="relative">
+                  <Card className="bg-white/10 backdrop-blur-md border-white/20 text-white hover:bg-white/15 transition-all duration-300 cursor-pointer group hover:ring-1 hover:ring-secondary/30 hover:scale-102 hover:shadow-lg">
+                    <CardContent className="p-6 text-center">
+                      <div className="flex items-center justify-center mb-4">
+                        <div className="bg-secondary/20 rounded-full p-3 group-hover:bg-secondary/30 transition-colors">
+                          <IconComponent className="h-8 w-8 text-secondary" />
+                        </div>
                       </div>
-                    ))}
-                  </div>
-                  <div className="bg-white/20 rounded-lg p-3">
-                    <p className="text-sm font-bold">📈 {service.results}</p>
-                    {(!isClient || pricingTest.config.showPricing !== false) && (
-                      <p className="text-xs opacity-90 font-medium">💰 {service.price} | 🕒 {service.duration}</p>
+
+                      <Badge className="bg-secondary/20 text-secondary border-secondary/30 ui-label mb-3">
+                        Etapa {service.order}
+                      </Badge>
+
+                      <h3 className="heading-small mb-2">{service.title}</h3>
+
+                      <div className="bg-secondary/10 rounded-lg p-3 mb-3">
+                        <p className="body-small text-emphasis text-secondary">{service.results}</p>
+                      </div>
+
+                      <div className="text-center">
+                        <p className="ui-caption text-slate-200 mb-1">{service.duration}</p>
+                        <p className="text-emphasis text-secondary">{service.price}</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Arrow connector for desktop */}
+                  {index < 2 && (
+                    <div className="hidden lg:block absolute top-1/2 -right-2 transform -translate-y-1/2 z-10">
+                      <ArrowRight className="h-6 w-6 text-secondary" />
+                    </div>
+                  )}
+                </div>
+              )
+            })}
+          </div>
+
+
+        </section>
+
+        {/* Services Grid - Detailed View */}
+        <section id="servicios" className="mb-8">
+          <div className="text-center mb-8">
+            <h2 className="heading-section text-white mb-4 text-balance">
+              Detalle de cada <span className="text-secondary">Etapa</span>
+            </h2>
+            <p className="body-large text-slate-200 max-w-3xl mx-auto text-pretty">
+              Conocé exactamente qué incluye cada fase de nuestro proceso
+            </p>
+
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+            {getServicesByOrder().map((service, index) => {
+              const IconComponent = service.icon === 'Megaphone' ? Megaphone :
+                                  service.icon === 'Target' ? Target : Heart
+              return (
+                <Card key={service.id} className={`bg-gradient-to-br ${service.color} text-white border-0 hover:scale-105 hover:shadow-2xl transition-all duration-300 group cursor-pointer drop-shadow-lg ring-1 ring-white/10 relative overflow-hidden`}>
+                  {/* Elemento visual conceptual de fondo */}
+                  <div className="absolute right-2 top-2 opacity-20 pointer-events-none">
+                    {service.order === 1 && (
+                      <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center">
+                        <div className="w-8 h-8 border-2 border-white/30 rounded-full relative">
+                          <div className="absolute inset-1 border border-white/20 rounded-full"></div>
+                        </div>
+                      </div>
+                    )}
+                    {service.order === 2 && (
+                      <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center">
+                        <div className="w-6 h-6 border-2 border-white/30 rounded-full relative">
+                          <div className="absolute inset-0.5 bg-white/20 rounded-full"></div>
+                        </div>
+                      </div>
+                    )}
+                    {service.order === 3 && (
+                      <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center">
+                        <div className="flex space-x-1">
+                          <div className="w-2 h-6 bg-white/30 rounded-full"></div>
+                          <div className="w-2 h-6 bg-white/20 rounded-full"></div>
+                          <div className="w-2 h-6 bg-white/30 rounded-full"></div>
+                        </div>
+                      </div>
                     )}
                   </div>
-                </CardContent>
-              </Card>
-            )
-          })}
+                  <CardHeader className="pb-4 relative z-10">
+                    <div className="flex items-center justify-between mb-2">
+                      <Badge className="bg-white/20 text-white border-0 ui-label group-hover:bg-white/30 transition-colors">
+                        Etapa {service.order}
+                      </Badge>
+                      <IconComponent className="h-8 w-8 group-hover:scale-110 transition-transform duration-300" />
+                    </div>
+                    <CardTitle className="heading-card">{service.title}</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div>
+                      <h4 className="text-emphasis ui-caption mb-2 text-white/90">✅ Acciones concretas:</h4>
+                      <div className="space-y-2 body-small">
+                        {service.features.map((feature, featureIndex) => (
+                          <div key={featureIndex} className="flex items-start space-x-2">
+                            <CheckCircle className="h-4 w-4 flex-shrink-0 mt-0.5" />
+                            <span>{feature}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="bg-white/20 rounded-lg p-3 space-y-2">
+                      <div>
+                        <p className="ui-caption text-emphasis text-white/80">🎯 BENEFICIO PRINCIPAL</p>
+                        <p className="body-small text-strong">{service.results}</p>
+                      </div>
+                      <div>
+                        <p className="ui-caption text-emphasis text-white/80">💬 RESULTADO ESPERADO</p>
+                        <p className="body-small">Mejora significativa en {service.order === 1 ? 'visibilidad y reconocimiento' : service.order === 2 ? 'generación de leads calificados' : 'retención y referidos'}</p>
+                      </div>
+                    </div>
+
+                    {(!isClient || pricingTest.config.showPricing !== false) && (
+                      <div className="bg-white/10 rounded-lg p-3 flex justify-between items-center">
+                        <div>
+                          <p className="text-xs text-white/70">🕒 Tiempo</p>
+                          <p className="font-bold text-sm">{service.duration}</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-xs text-white/70">💰 Precio</p>
+                          <p className="font-bold text-sm">{service.price}</p>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Botón para abrir popup de detalles */}
+                    <div className="mt-4">
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault()
+                          e.stopPropagation()
+                          setDetailsModalOpen(service.order)
+                        }}
+                        className="flex items-center text-cyan-300 hover:text-cyan-100 text-sm font-medium transition-colors duration-300"
+                      >
+                        <Eye className="h-4 w-4 mr-1" />
+                        Ver todas las acciones del sprint
+                      </button>
+
+
+                    </div>
+                  </CardContent>
+                </Card>
+              )
+            })}
+          </div>
+
+          {/* Botón para ver detalles completos - al final de la sección */}
+          <div className="text-center mt-12">
+            <Button
+              size="lg"
+              className="bg-secondary hover:bg-secondary/90 text-accent font-bold text-lg py-6 px-8 shadow-2xl hover:shadow-secondary/25 transition-all duration-300 hover:scale-105 ring-2 ring-secondary/30 hover:ring-secondary/50"
+              onClick={() => setIsContactModalOpen(true)}
+            >
+              <Calendar className="mr-3 h-6 w-6" />
+              Quiero implementar este sistema completo
+            </Button>
+            <p className="text-blue-ribbon-200 text-sm mt-3 font-medium">
+              Consulta gratuita • Sin compromiso • Resultados garantizados
+            </p>
+          </div>
         </section>
 
-        {/* Mixed Grid Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-6">
-          {/* Perfil Demográfico */}
-          <Card className="lg:col-span-4 bg-gradient-to-br from-blue-ribbon-600 to-blue-ribbon-700 text-white border-0">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-lg font-bold">Perfil Demográfico</CardTitle>
-                <Users className="h-6 w-6" />
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-3 text-sm">
-              <div>
-                <p className="font-bold">Edad:</p>
-                <p className="opacity-90 font-medium">25-35 años</p>
-              </div>
-              <div>
-                <p className="font-bold">Estado civil:</p>
-                <p className="opacity-90 font-medium">Parejas jóvenes o individuos solteros</p>
-              </div>
-              <div>
-                <p className="font-bold">Ingresos:</p>
-                <p className="opacity-90 font-medium">Medios a bajos, acceso limitado a créditos tradicionales</p>
-              </div>
-            </CardContent>
-          </Card>
+        {/* Benefits Section */}
+        <section className="mb-8">
+          <div className="text-center mb-8">
+            <h2 className="heading-section text-white mb-4 text-balance">
+              ¿Por qué elegirnos?
+            </h2>
+            <p className="body-large text-blue-ribbon-200 max-w-3xl mx-auto text-pretty">
+              Ventajas que nos diferencian en el mercado inmobiliario
+            </p>
+          </div>
 
-          {/* Público Objetivo */}
-          <Card className="lg:col-span-5 bg-gradient-to-br from-secondary to-secondary/80 text-accent border-0">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-xl font-bold">Público Objetivo</CardTitle>
-                <Target className="h-8 w-8" />
-              </div>
-            </CardHeader>
-            <CardContent>
-              <p className="text-lg font-bold">
-                Jóvenes o parejas de ingresos medios/bajos buscando su primer terreno.
-              </p>
-            </CardContent>
-          </Card>
-
-          {/* Estadísticas */}
-          <Card className="lg:col-span-3 bg-white text-blue-ribbon-950 border-0">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-lg font-bold">Estadísticas</CardTitle>
-                <BarChart3 className="h-6 w-6 text-blue-ribbon-700" />
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-2 text-sm font-medium">
-              <p>
-                <strong className="text-blue-ribbon-700">42.9%</strong> déficit cuantitativo
-              </p>
-              <p>
-                <strong className="text-blue-ribbon-700">57.1%</strong> déficit cualitativo
-              </p>
-              <p>
-                <strong className="text-blue-ribbon-700">52.9%</strong> jóvenes sin vivienda propia
-              </p>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Perfil Psicográfico - Large Card */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-6">
-          <Card className="lg:col-span-8 bg-white text-blue-ribbon-950 border-0">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-2xl font-bold">Perfil Psicográfico</CardTitle>
-                <Brain className="h-8 w-8 text-blue-ribbon-700" />
-              </div>
-            </CardHeader>
-            <CardContent className="grid md:grid-cols-2 gap-6">
-              <div>
-                <h4 className="font-bold text-blue-ribbon-700 mb-2">Motivaciones:</h4>
-                <ul className="space-y-1 text-sm font-medium">
-                  <li>• Obtener independencia habitacional</li>
-                  <li>• Construir hogar desde cero</li>
-                  <li>• Buscar soluciones económicas</li>
-                  <li>• Invertir en patrimonio a largo plazo</li>
-                </ul>
-              </div>
-              <div>
-                <h4 className="font-bold text-blue-ribbon-700 mb-2">Frustraciones:</h4>
-                <ul className="space-y-1 text-sm font-medium">
-                  <li>• Dificultad para acceder a créditos</li>
-                  <li>• Preocupaciones sobre seguridad jurídica</li>
-                  <li>• Falta de información clara</li>
-                </ul>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="lg:col-span-4 bg-gradient-to-br from-blue-ribbon-700 to-blue-ribbon-800 text-white border-0">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-lg font-bold">Mapa de Empatía</CardTitle>
-                <Heart className="h-6 w-6" />
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-3 text-sm">
-              <div>
-                <p className="font-bold">Qué piensa:</p>
-                <p className="opacity-90 font-medium">"Quiero un lugar propio para mi familia"</p>
-              </div>
-              <div>
-                <p className="font-bold">Qué ve:</p>
-                <p className="opacity-90 font-medium">Publicidades de desarrollos con planes accesibles</p>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Bottom Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
-          {/* Objeciones */}
-          <Card className="bg-gradient-to-br from-blue-ribbon-300 to-blue-ribbon-500 text-white border-0">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-lg font-bold">Objeciones Frecuentes</CardTitle>
-                <MessageCircle className="h-6 w-6" />
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-2 text-sm font-medium">
-              <p>• ¿Cómo financio sin crédito hipotecario?</p>
-              <p>• ¿Qué garantías tengo?</p>
-              <p>• ¿Cuánto tiempo tomará construir?</p>
-            </CardContent>
-          </Card>
-
-          {/* Recomendaciones */}
-          <Card className="bg-gradient-to-br from-blue-ribbon-500 to-blue-ribbon-700 text-white border-0">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-lg font-bold">Recomendaciones</CardTitle>
-                <Lightbulb className="h-6 w-6" />
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-2 text-sm font-medium">
-              <p>• Guías paso a paso</p>
-              <p>• Videos explicativos</p>
-              <p>• Testimonios de clientes</p>
-              <p>• Comparativas de financiamiento</p>
-            </CardContent>
-          </Card>
-
-          {/* CTA Card */}
-          <Card className="bg-gradient-to-br from-secondary to-secondary/80 text-accent border-0">
-            <CardContent className="p-6 text-center h-full flex flex-col justify-center">
-              <h3 className="text-xl font-bold mb-4">¿Listo para empezar?</h3>
-              <Dialog open={isContactModalOpen} onOpenChange={setIsContactModalOpen}>
-                <DialogTrigger asChild>
-                  <Button className="bg-blue-ribbon-700 text-white hover:bg-blue-ribbon-800 font-bold">
-                    <Calendar className="mr-2 h-4 w-4" />
-                    Agendá tu consulta
-                  </Button>
-                </DialogTrigger>
-              </Dialog>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Testimonials */}
-        <section id="testimonios" className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-          <h2 className="sr-only">Testimonios de Clientes</h2>
-          {getFeaturedTestimonials().map((testimonial, index) => (
-            <Card key={index} className={`bg-gradient-to-br ${testimonial.color} text-white border-0`}>
-              <CardContent className="p-6">
-                <div className="flex items-center mb-3">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="h-4 w-4 text-secondary fill-current" />
-                  ))}
-                </div>
-                <blockquote className="text-sm mb-4 font-medium">"{testimonial.text}"</blockquote>
-                <div className="flex items-center">
-                  <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center mr-3">
-                    <span className="text-xs font-bold">
-                      {testimonial.name
-                        .split(" ")
-                        .map((n) => n[0])
-                        .join("")}
-                    </span>
-                  </div>
-                  <div>
-                    <p className="font-bold text-sm">{testimonial.name}</p>
-                    <p className="text-xs opacity-90 font-medium">{testimonial.company}</p>
-                  </div>
-                </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+            <Card className="bg-white/5 backdrop-blur-sm border-white/10 text-white hover:bg-white/10 transition-all duration-300 hover:scale-102">
+              <CardContent className="p-5 text-center">
+                <Target className="h-10 w-10 mx-auto mb-3 text-secondary/80" />
+                <h3 className="text-lg font-semibold mb-2">Especialización</h3>
+                <p className="text-slate-200 text-sm">100% enfocados en el sector inmobiliario</p>
               </CardContent>
             </Card>
-          ))}
+
+            <Card className="bg-white/5 backdrop-blur-sm border-white/10 text-white hover:bg-white/10 transition-all duration-300 hover:scale-102">
+              <CardContent className="p-5 text-center">
+                <BarChart3 className="h-10 w-10 mx-auto mb-3 text-secondary/80" />
+                <h3 className="text-lg font-semibold mb-2">Resultados Medibles</h3>
+                <p className="text-slate-200 text-sm">Métricas claras y reportes detallados</p>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-white/5 backdrop-blur-sm border-white/10 text-white hover:bg-white/10 transition-all duration-300 hover:scale-102">
+              <CardContent className="p-5 text-center">
+                <Users className="h-10 w-10 mx-auto mb-3 text-secondary/80" />
+                <h3 className="text-lg font-semibold mb-2">Acompañamiento</h3>
+                <p className="text-slate-200 text-sm">Soporte personalizado en cada etapa</p>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-white/5 backdrop-blur-sm border-white/10 text-white hover:bg-white/10 transition-all duration-300 hover:scale-102">
+              <CardContent className="p-5 text-center">
+                <Lightbulb className="h-10 w-10 mx-auto mb-3 text-secondary/80" />
+                <h3 className="text-lg font-semibold mb-2">Innovación</h3>
+                <p className="text-slate-200 text-sm">Últimas tendencias y tecnologías</p>
+              </CardContent>
+            </Card>
+          </div>
         </section>
 
-        {/* Final CTA */}
-        <section id="contacto">
-        <Card className="bg-gradient-to-r from-blue-ribbon-700 to-blue-ribbon-800 text-white border-0">
-          <CardContent className="p-8 lg:p-12 text-center">
-            <h2 className="text-3xl lg:text-4xl font-bold mb-4">¿Listo para transformar tu presencia digital?</h2>
-            <p className="text-xl text-blue-ribbon-100 mb-8 max-w-2xl mx-auto font-medium">
-              No esperes más. Cada día que pasa sin una estrategia digital es una oportunidad perdida.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Dialog open={isContactModalOpen} onOpenChange={setIsContactModalOpen}>
-                <DialogTrigger asChild>
-                  <Button size="lg" className="bg-secondary hover:bg-secondary/90 text-accent font-bold">
-                    <Calendar className="mr-2 h-5 w-5" />
-                    Agendá una reunión gratuita
-                  </Button>
-                </DialogTrigger>
-              </Dialog>
+        {/* Strategic Research Section - Optional/Expandible */}
+        <section className="mb-8">
+          <Card className="bg-white/5 backdrop-blur-md border-white/10 text-white">
+            <CardHeader className="cursor-pointer hover:bg-white/5 transition-all duration-300 rounded-lg" onClick={() => {
+              const content = document.getElementById('research-content')
+              const icon = document.getElementById('research-icon')
+              if (content && icon) {
+                content.classList.toggle('hidden')
+                if (!content.classList.contains('hidden')) {
+                  content.classList.add('animate-in', 'slide-in-from-top-2', 'fade-in', 'duration-300')
+                }
+                icon.style.transform = content.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)'
+              }
+            }}>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="text-xl font-bold text-white">
+                    ¿Por qué este plan funciona?
+                  </CardTitle>
+                  <p className="text-blue-ribbon-200 text-sm font-medium mt-1">
+                    Fundamentos estratégicos y análisis de mercado
+                  </p>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Badge className="bg-secondary/20 text-secondary border-secondary/30 font-semibold">
+                    Respaldo Estratégico
+                  </Badge>
+                  <ArrowRight
+                    id="research-icon"
+                    className="h-5 w-5 text-secondary transition-transform duration-300"
+                    style={{transform: 'rotate(0deg)'}}
+                  />
+                </div>
+              </div>
+            </CardHeader>
 
-              <Button
-                size="lg"
-                variant="outline"
-                className="border-white/30 text-white hover:bg-white/10 font-semibold"
-                onClick={() => {
-                  trackDownloadClick()
-                  // Aquí puedes agregar la lógica para descargar un PDF
-                  alert("Funcionalidad de descarga próximamente disponible")
-                }}
-              >
-                <Download className="mr-2 h-5 w-5" />
-                Descargá el plan completo
-              </Button>
+            <div id="research-content" className="hidden">
+              <CardContent className="pt-0">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+                  {/* Perfil Demográfico */}
+                  <Card className="bg-blue-ribbon-600/20 border-blue-ribbon-400/30 text-white relative overflow-hidden">
+                    {/* Ícono conceptual de demografía */}
+                    <div className="absolute right-2 top-2 opacity-20 pointer-events-none">
+                      <div className="w-8 h-8 flex items-center justify-center">
+                        <div className="grid grid-cols-2 gap-0.5">
+                          <div className="w-1.5 h-1.5 bg-white/40 rounded-full"></div>
+                          <div className="w-1.5 h-1.5 bg-white/30 rounded-full"></div>
+                          <div className="w-1.5 h-1.5 bg-white/30 rounded-full"></div>
+                          <div className="w-1.5 h-1.5 bg-white/40 rounded-full"></div>
+                        </div>
+                      </div>
+                    </div>
+                    <CardHeader className="pb-3 relative z-10">
+                      <div className="flex items-center justify-between">
+                        <CardTitle className="text-lg font-bold">Perfil Demográfico</CardTitle>
+                        <Users className="h-5 w-5 text-secondary" />
+                      </div>
+                    </CardHeader>
+                    <CardContent className="space-y-2 text-sm">
+                      <div>
+                        <p className="font-bold text-secondary">Edad:</p>
+                        <p className="opacity-90 font-medium">25-35 años</p>
+                      </div>
+                      <div>
+                        <p className="font-bold text-secondary">Estado civil:</p>
+                        <p className="opacity-90 font-medium">Parejas jóvenes o individuos solteros</p>
+                      </div>
+                      <div>
+                        <p className="font-bold text-secondary">Ingresos:</p>
+                        <p className="opacity-90 font-medium">Medios a bajos, acceso limitado a créditos</p>
+                      </div>
+                    </CardContent>
+                  </Card>
 
-              <Button
-                size="lg"
-                className="bg-blue-ribbon-600 hover:bg-blue-ribbon-700 font-bold"
-                onClick={openWhatsApp}
-              >
-                <MessageCircle className="mr-2 h-5 w-5" />
-                WhatsApp Directo
-              </Button>
+                  {/* Perfil Psicográfico */}
+                  <Card className="bg-blue-ribbon-600/20 border-blue-ribbon-400/30 text-white">
+                    <CardHeader className="pb-3">
+                      <div className="flex items-center justify-between">
+                        <CardTitle className="text-lg font-bold">Perfil Psicográfico</CardTitle>
+                        <Brain className="h-5 w-5 text-secondary" />
+                      </div>
+                    </CardHeader>
+                    <CardContent className="space-y-3 text-sm">
+                      <div>
+                        <p className="font-bold text-secondary">Motivaciones:</p>
+                        <ul className="space-y-1 text-xs opacity-90">
+                          <li>• Independencia habitacional</li>
+                          <li>• Construir hogar desde cero</li>
+                          <li>• Soluciones económicas</li>
+                        </ul>
+                      </div>
+                      <div>
+                        <p className="font-bold text-secondary">Frustraciones:</p>
+                        <ul className="space-y-1 text-xs opacity-90">
+                          <li>• Dificultad para créditos</li>
+                          <li>• Seguridad jurídica</li>
+                          <li>• Falta de información</li>
+                        </ul>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Estadísticas Clave */}
+                  <Card className="bg-blue-ribbon-600/20 border-blue-ribbon-400/30 text-white">
+                    <CardHeader className="pb-3">
+                      <div className="flex items-center justify-between">
+                        <CardTitle className="text-lg font-bold">Estadísticas Clave</CardTitle>
+                        <BarChart3 className="h-5 w-5 text-secondary" />
+                      </div>
+                    </CardHeader>
+                    <CardContent className="space-y-2 text-sm">
+                      <p><strong className="text-secondary">85%</strong> comienza online</p>
+                      <p><strong className="text-secondary">42.9%</strong> déficit cuantitativo</p>
+                      <p><strong className="text-secondary">52.9%</strong> jóvenes sin vivienda propia</p>
+                    </CardContent>
+                  </Card>
+                </div>
+              </CardContent>
             </div>
-          </CardContent>
-        </Card>
+          </Card>
+        </section>
+
+        {/* Testimonials */}
+        <section id="testimonios" className="mb-8">
+          <div className="text-center mb-8">
+            <h2 className="heading-section text-white mb-4 text-balance">
+              Casos de <span className="text-secondary">Éxito</span>
+            </h2>
+            <p className="body-large text-blue-ribbon-200 max-w-3xl mx-auto text-pretty">
+              Resultados reales de inmobiliarias que confiaron en nuestro proceso
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {getFeaturedTestimonials().map((testimonial, index) => {
+              const etapaLabels = ['Branding', 'Captación', 'Fidelización']
+              return (
+                <Card key={index} className={`bg-gradient-to-br ${testimonial.color} text-white border-0 hover:scale-105 transition-all duration-300 relative overflow-hidden`}>
+                  {/* Silueta de cliente estilo Trustpilot */}
+                  <div className="absolute right-4 bottom-4 opacity-15 pointer-events-none">
+                    <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
+                      <div className="w-6 h-6 bg-white/30 rounded-full relative">
+                        <div className="absolute top-1 left-1.5 w-3 h-2 bg-white/40 rounded-full"></div>
+                        <div className="absolute bottom-0 left-0 w-6 h-3 bg-white/40 rounded-b-full"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <CardContent className="p-6 relative z-10">
+                    <div className="flex items-center justify-between mb-4">
+                      <Badge className="bg-white/20 text-white border-0 font-semibold">
+                        Etapa {index + 1}: {etapaLabels[index]}
+                      </Badge>
+                      <div className="flex items-center">
+                        {[...Array(5)].map((_, i) => (
+                          <Star key={i} className="h-3 w-3 text-secondary fill-current" />
+                        ))}
+                      </div>
+                    </div>
+
+                    <blockquote className="text-sm mb-4 font-medium leading-relaxed">
+                      "{testimonial.text}"
+                    </blockquote>
+
+                    <div className="flex items-center">
+                      <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mr-4">
+                        <span className="text-sm font-bold">
+                          {testimonial.name
+                            .split(" ")
+                            .map((n) => n[0])
+                            .join("")}
+                        </span>
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-bold text-sm">{testimonial.name}</p>
+                        <p className="text-xs opacity-90 font-medium">{testimonial.company}</p>
+                        <div className="flex items-center mt-1">
+                          <Building className="h-3 w-3 mr-1 opacity-70" />
+                          <span className="text-xs opacity-70">Inmobiliaria</span>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              )
+            })}
+          </div>
+        </section>
+
+        {/* Final CTA - Enhanced */}
+        <section id="contacto" className="mb-8">
+          <Card className="bg-gradient-to-r from-blue-ribbon-700 via-blue-ribbon-800 to-blue-ribbon-900 text-white border-0 relative overflow-hidden">
+            <CardContent className="p-8 lg:p-16 text-center relative z-10">
+              <div className="max-w-4xl mx-auto">
+                <Badge className="bg-secondary/20 text-secondary border-secondary/30 mb-6 ui-label text-lg px-4 py-2">
+                  🚀 Transformá tu negocio HOY
+                </Badge>
+
+                <h2 className="heading-hero mb-6 text-balance">
+                  ¿Listo para <span className="text-secondary">transformar</span> tu presencia digital?
+                </h2>
+
+                <p className="subheading-large text-blue-ribbon-100 mb-4 max-w-3xl mx-auto text-pretty">
+                  Cada día sin estrategia es una oportunidad perdida.
+                </p>
+
+                <p className="body-large text-blue-ribbon-200 mb-10 max-w-2xl mx-auto text-pretty">
+                  Únete a las inmobiliarias que ya están dominando el mercado digital
+                </p>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto">
+                  <Dialog open={isContactModalOpen} onOpenChange={setIsContactModalOpen}>
+                    <DialogTrigger asChild>
+                      <Button
+                        size="lg"
+                        className="bg-secondary hover:bg-secondary/90 text-accent button-text text-lg py-6 px-8 shadow-2xl hover:shadow-secondary/25 transition-all duration-300 hover:scale-105"
+                      >
+                        <Calendar className="mr-3 h-6 w-6" />
+                        Agendá una reunión gratuita
+                      </Button>
+                    </DialogTrigger>
+                  </Dialog>
+
+                  <Button
+                    size="lg"
+                    className="bg-blue-ribbon-600 hover:bg-blue-ribbon-500 button-text text-lg py-6 px-8 shadow-2xl hover:shadow-blue-ribbon-500/25 transition-all duration-300 hover:scale-105"
+                    onClick={openWhatsApp}
+                  >
+                    <MessageCircle className="mr-3 h-6 w-6" />
+                    WhatsApp Directo
+                  </Button>
+
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="bg-white text-blue-800 border-white hover:bg-blue-100 button-text text-lg py-6 px-8 transition-all duration-300 hover:scale-105"
+                    onClick={() => {
+                      trackDownloadClick()
+                      // Aquí puedes agregar la lógica para descargar un PDF
+                      alert("Funcionalidad de descarga próximamente disponible")
+                    }}
+                  >
+                    <Download className="mr-3 h-6 w-6" />
+                    Descargá el plan completo
+                  </Button>
+                </div>
+
+                <div className="mt-8 flex items-center justify-center space-x-6 text-slate-200">
+                  <div className="flex items-center">
+                    <CheckCircle className="h-5 w-5 text-secondary mr-2" />
+                    <span className="text-sm font-medium">Consulta 100% gratuita</span>
+                  </div>
+                  <div className="flex items-center">
+                    <CheckCircle className="h-5 w-5 text-secondary mr-2" />
+                    <span className="text-sm font-medium">Sin compromiso</span>
+                  </div>
+                  <div className="flex items-center">
+                    <CheckCircle className="h-5 w-5 text-secondary mr-2" />
+                    <span className="text-sm font-medium">Resultados garantizados</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Background decoration */}
+              <div className="absolute top-0 right-0 w-96 h-96 bg-secondary/5 rounded-full -translate-y-48 translate-x-48"></div>
+              <div className="absolute bottom-0 left-0 w-64 h-64 bg-white/5 rounded-full translate-y-32 -translate-x-32"></div>
+            </CardContent>
+          </Card>
         </section>
       </main>
 
+      {/* CTA Fijo Móvil */}
+      <div className="fixed bottom-4 inset-x-4 sm:hidden z-50">
+        <Button
+          className="w-full bg-cyan-600 text-white py-4 rounded-xl shadow-2xl hover:bg-cyan-700 transition-all duration-300 font-bold text-lg"
+          onClick={() => setIsContactModalOpen(true)}
+        >
+          <Calendar className="mr-2 h-5 w-5" />
+          Agendá una reunión
+        </Button>
+      </div>
+
       {/* Footer */}
-      <footer className="bg-blue-ribbon-950 text-white py-12 px-4 mt-12">
+      <footer className="bg-blue-ribbon-950 text-white py-12 px-4 mt-12 mb-20 sm:mb-0">
         <div className="container mx-auto max-w-6xl">
           <div className="grid md:grid-cols-4 gap-8">
             <div className="space-y-4">
@@ -897,16 +1271,16 @@ export default function Component() {
                   height={32}
                   className="h-8 w-auto brightness-0 invert"
                 />
-                <span className="text-xl font-bold">{siteConfig.name}</span>
+                <span className="heading-small">{siteConfig.name}</span>
               </div>
-              <p className="text-blue-ribbon-200 text-sm font-medium">
+              <p className="text-slate-200 body-small">
                 {siteConfig.description}
               </p>
             </div>
 
             <div>
-              <h3 className="font-bold mb-4">Servicios</h3>
-              <ul className="space-y-2 text-sm text-blue-ribbon-200 font-medium">
+              <h3 className="text-emphasis mb-4">Servicios</h3>
+              <ul className="space-y-2 body-small text-slate-200">
                 {getServicesByOrder().map((service) => (
                   <li key={service.id}>{service.title}</li>
                 ))}
@@ -914,8 +1288,8 @@ export default function Component() {
             </div>
 
             <div>
-              <h3 className="font-bold mb-4">Contacto</h3>
-              <ul className="space-y-2 text-sm text-blue-ribbon-200 font-medium">
+              <h3 className="text-emphasis mb-4">Contacto</h3>
+              <ul className="space-y-2 body-small text-slate-200">
                 <li>📧 {siteConfig.email}</li>
                 <li>📱 {siteConfig.phone}</li>
                 <li>📍 {siteConfig.address}</li>
@@ -923,13 +1297,13 @@ export default function Component() {
             </div>
 
             <div>
-              <h3 className="font-bold mb-4">Síguenos</h3>
+              <h3 className="text-emphasis mb-4">Síguenos</h3>
               <div className="flex space-x-4">
                 <a
                   href={siteConfig.social.instagram}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-blue-ribbon-200 hover:text-white transition-all duration-200 hover:scale-110"
+                  className="text-slate-200 hover:text-white transition-all duration-200 hover:scale-110"
                   aria-label="Síguenos en Instagram"
                 >
                   <Instagram className="h-6 w-6" />
@@ -938,7 +1312,7 @@ export default function Component() {
                   href={siteConfig.social.facebook}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-blue-ribbon-200 hover:text-white transition-all duration-200 hover:scale-110"
+                  className="text-slate-200 hover:text-white transition-all duration-200 hover:scale-110"
                   aria-label="Síguenos en Facebook"
                 >
                   <Facebook className="h-6 w-6" />
@@ -947,7 +1321,7 @@ export default function Component() {
                   href={siteConfig.social.linkedin}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-blue-ribbon-200 hover:text-white transition-all duration-200 hover:scale-110"
+                  className="text-slate-200 hover:text-white transition-all duration-200 hover:scale-110"
                   aria-label="Síguenos en LinkedIn"
                 >
                   <Linkedin className="h-6 w-6" />
@@ -956,7 +1330,7 @@ export default function Component() {
             </div>
           </div>
 
-          <div className="border-t border-blue-ribbon-800 mt-8 pt-8 text-center text-sm text-blue-ribbon-200">
+          <div className="border-t border-blue-ribbon-800 mt-8 pt-8 text-center text-sm text-slate-200">
             <p className="font-medium">
               &copy; {new Date().getFullYear()} {siteConfig.name}. Todos los derechos reservados.
             </p>
@@ -968,6 +1342,13 @@ export default function Component() {
       <ScheduleModal
         isOpen={isScheduleModalOpen}
         onClose={() => setIsScheduleModalOpen(false)}
+      />
+
+      {/* Modal de detalles de etapas */}
+      <StageDetailsModal
+        isOpen={detailsModalOpen !== null}
+        onClose={() => setDetailsModalOpen(null)}
+        stageNumber={detailsModalOpen}
       />
     </div>
   )

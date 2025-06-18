@@ -22,6 +22,8 @@ const config: Config = {
       fontFamily: {
         sans: [
           "Myriad Pro",
+          "Source Sans Pro",
+          "Open Sans",
           "-apple-system",
           "BlinkMacSystemFont",
           "Segoe UI",
@@ -29,6 +31,41 @@ const config: Config = {
           "Arial",
           "sans-serif",
         ],
+        'myriad': [
+          "Myriad Pro",
+          "Source Sans Pro",
+          "Open Sans",
+          "sans-serif",
+        ],
+        'source': [
+          "Source Sans Pro",
+          "Myriad Pro",
+          "Open Sans",
+          "sans-serif",
+        ],
+        'open': [
+          "Open Sans",
+          "Myriad Pro",
+          "Source Sans Pro",
+          "sans-serif",
+        ],
+      },
+      fontWeight: {
+        'light': '300',
+        'normal': '400',
+        'medium': '500',
+        'semibold': '600',
+        'bold': '700',
+        'extrabold': '800',
+        'black': '900',
+      },
+      letterSpacing: {
+        'tighter': '-0.02em',
+        'tight': '-0.01em',
+        'normal': '0',
+        'wide': '0.025em',
+        'wider': '0.05em',
+        'widest': '0.1em',
       },
       colors: {
         border: "hsl(var(--border))",

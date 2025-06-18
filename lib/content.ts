@@ -57,7 +57,7 @@ export const testimonials: Testimonial[] = [
     id: "1",
     name: "María Rodríguez",
     company: "Inmobiliaria Premium",
-    text: "Gracias al plan pude captar más leads en 3 meses que en todo el año anterior.",
+    text: "El branding profesional transformó completamente nuestra imagen. Ahora los clientes nos perciben como líderes del mercado.",
     rating: 5,
     color: "from-blue-ribbon-400 to-blue-ribbon-600",
     featured: true
@@ -66,7 +66,7 @@ export const testimonials: Testimonial[] = [
     id: "2",
     name: "Carlos López",
     company: "Propiedades del Sur",
-    text: "El ROI de las campañas superó todas mis expectativas.",
+    text: "Las campañas de captación nos trajeron 60% más consultas calificadas. El ROI superó todas nuestras expectativas.",
     rating: 5,
     color: "from-blue-ribbon-500 to-blue-ribbon-700",
     featured: true
@@ -75,7 +75,7 @@ export const testimonials: Testimonial[] = [
     id: "3",
     name: "Ana García",
     company: "Inmobiliaria Moderna",
-    text: "La estrategia de fidelización me ayudó a generar un 40% más de referidos.",
+    text: "La automatización de WhatsApp y las campañas de fidelización generaron 35% más referidos. Increíble resultado.",
     rating: 5,
     color: "from-blue-ribbon-600 to-blue-ribbon-800",
     featured: true
@@ -84,7 +84,7 @@ export const testimonials: Testimonial[] = [
     id: "4",
     name: "Roberto Martínez",
     company: "Desarrollos del Norte",
-    text: "En 6 meses duplicamos nuestras ventas gracias a la estrategia digital.",
+    text: "En 6 meses duplicamos nuestras ventas gracias a la estrategia digital completa.",
     rating: 5,
     color: "from-blue-ribbon-300 to-blue-ribbon-500",
     featured: false
