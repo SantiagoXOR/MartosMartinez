@@ -39,14 +39,6 @@ export const metadata: Metadata = {
     description: 'Potenciá tu marca inmobiliaria en 3 pasos. Especialistas en marketing digital para el sector inmobiliario.',
     url: 'https://martosmarketing.com',
     siteName: 'Martos Martinez',
-    images: [
-      {
-        url: '/logo-martos-martinez.png',
-        width: 1200,
-        height: 630,
-        alt: 'Martos Martinez - Marketing Inmobiliario',
-      },
-    ],
     locale: 'es_AR',
     type: 'website',
   },
@@ -54,7 +46,6 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Martos Martinez - Marketing Inmobiliario',
     description: 'Especialistas en marketing digital para el sector inmobiliario',
-    images: ['/logo-martos-martinez.png'],
   },
   robots: {
     index: true,
@@ -83,7 +74,7 @@ export default function RootLayout({
     "name": "Martos Martinez",
     "description": "Especialistas en marketing digital para el sector inmobiliario",
     "url": "https://martosmarketing.com",
-    "logo": "https://martosmarketing.com/logo-martos-martinez.png",
+    "logo": "https://martosmarketing.com/opengraph-image.svg",
     "contactPoint": {
       "@type": "ContactPoint",
       "telephone": "+54-9-11-1234-5678",

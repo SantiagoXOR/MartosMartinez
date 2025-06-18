@@ -586,11 +586,11 @@ export default function Component() {
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <Image
-              src="/logo-martos-martinez.png"
+              src="/Recurso 3.svg"
               alt="Martos Martinez Logo"
-              width={120}
-              height={40}
-              className="h-10 w-auto"
+              width={200}
+              height={60}
+              className="h-12 w-auto"
               priority
             />
           </div>
@@ -1265,13 +1265,12 @@ export default function Component() {
             <div className="space-y-4">
               <div className="flex items-center space-x-3">
                 <Image
-                  src="/logo-martos-martinez.png"
+                  src="/Recurso 3.svg"
                   alt="Martos Martinez Logo"
-                  width={96}
-                  height={32}
-                  className="h-8 w-auto brightness-0 invert"
+                  width={160}
+                  height={48}
+                  className="h-10 w-auto brightness-0 invert"
                 />
-                <span className="heading-small">{siteConfig.name}</span>
               </div>
               <p className="text-slate-200 body-small">
                 {siteConfig.description}
