@@ -48,15 +48,12 @@ import { testimonials, services, siteConfig, getFeaturedTestimonials, getService
 import { trackFormSubmission, trackWhatsAppClick, trackDownloadClick } from "@/lib/analytics"
 import { useABTest } from "@/lib/ab-testing"
 
-// Esquema de validación para el formulario de contacto
+// Esquema de validación para el formulario de contacto - Simplificado
 const contactFormSchema = z.object({
-  name: z.string().min(2, "El nombre debe tener al menos 2 caracteres"),
-  email: z.string().email("Ingresa un email válido"),
-  phone: z.string().min(10, "El teléfono debe tener al menos 10 dígitos"),
-  company: z.string().optional(),
-  service: z.string().min(1, "Selecciona un servicio"),
-  message: z.string().min(10, "El mensaje debe tener al menos 10 caracteres"),
-  acceptTerms: z.boolean().refine(val => val === true, "Debes aceptar los términos y condiciones")
+  name: z.string().min(2, "Nombre requerido"),
+  email: z.string().email("Email válido requerido"),
+  phone: z.string().min(8, "Teléfono requerido"),
+  message: z.string().min(5, "Mensaje requerido")
 })
 
 type ContactFormData = z.infer<typeof contactFormSchema>
@@ -72,10 +69,7 @@ function ContactForm({ onClose }: { onClose: () => void }) {
       name: "",
       email: "",
       phone: "",
-      company: "",
-      service: "",
-      message: "",
-      acceptTerms: false
+      message: ""
     }
   })
 
@@ -118,102 +112,16 @@ function ContactForm({ onClose }: { onClose: () => void }) {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Nombre completo *</FormLabel>
-                <FormControl>
-                  <Input placeholder="Tu nombre" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Email *</FormLabel>
-                <FormControl>
-                  <Input placeholder="tu@email.com" type="email" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <FormField
-            control={form.control}
-            name="phone"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Teléfono *</FormLabel>
-                <FormControl>
-                  <Input placeholder="+54 9 11 1234-5678" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="company"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Empresa/Inmobiliaria</FormLabel>
-                <FormControl>
-                  <Input placeholder="Nombre de tu empresa" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <FormField
           control={form.control}
-          name="service"
+          name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Servicio de interés *</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecciona un servicio" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="branding">Branding & Posicionamiento</SelectItem>
-                  <SelectItem value="captacion">Captación de Prospectos</SelectItem>
-                  <SelectItem value="fidelizacion">Fidelización & Referidos</SelectItem>
-                  <SelectItem value="completo">Plan Completo (3 Etapas)</SelectItem>
-                  <SelectItem value="consultoria">Consultoría Personalizada</SelectItem>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="message"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Mensaje *</FormLabel>
               <FormControl>
-                <Textarea
-                  placeholder="Cuéntanos sobre tu proyecto y objetivos..."
-                  className="min-h-[100px]"
+                <Input
+                  placeholder="Tu nombre"
+                  className="rounded-xl border-gray-200 py-3"
                   {...field}
                 />
               </FormControl>
@@ -224,45 +132,70 @@ function ContactForm({ onClose }: { onClose: () => void }) {
 
         <FormField
           control={form.control}
-          name="acceptTerms"
+          name="email"
           render={({ field }) => (
-            <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+            <FormItem>
               <FormControl>
-                <Checkbox
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
+                <Input
+                  placeholder="tu@email.com"
+                  type="email"
+                  className="rounded-xl border-gray-200 py-3"
+                  {...field}
                 />
               </FormControl>
-              <div className="space-y-1 leading-none">
-                <FormLabel className="text-sm">
-                  Acepto los términos y condiciones y autorizo el tratamiento de mis datos personales *
-                </FormLabel>
-              </div>
               <FormMessage />
             </FormItem>
           )}
         />
 
-        <div className="flex gap-4">
+        <FormField
+          control={form.control}
+          name="phone"
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <Input
+                  placeholder="Tu teléfono"
+                  className="rounded-xl border-gray-200 py-3"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="message"
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <Textarea
+                  placeholder="¿En qué podemos ayudarte?"
+                  className="resize-none rounded-xl border-gray-200"
+                  rows={3}
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <div className="flex gap-3 pt-2">
           <Button
             type="submit"
-            className="flex-1 bg-blue-ribbon-700 hover:bg-blue-ribbon-800 transition-all duration-200"
             disabled={isSubmitting}
+            className="flex-1 bg-blue-600 hover:bg-blue-700 rounded-xl py-3 font-medium"
           >
-            {isSubmitting ? (
-              <div className="flex items-center">
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                Enviando...
-              </div>
-            ) : (
-              "Enviar mensaje"
-            )}
+            {isSubmitting ? "Enviando..." : "Enviar"}
           </Button>
           <Button
             type="button"
             variant="outline"
             onClick={onClose}
-            disabled={isSubmitting}
+            className="rounded-xl px-4"
           >
             Cancelar
           </Button>
@@ -328,34 +261,27 @@ function ScheduleModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => vo
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-sm rounded-2xl">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold text-blue-ribbon-700">
-            Agendá tu Consulta Gratuita
+          <DialogTitle className="text-lg font-bold text-blue-600">
+            Agendá tu Consulta
           </DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-6">
+        <div className="space-y-4">
           <div>
-            <Label htmlFor="date" className="text-sm font-medium">
-              Fecha preferida
-            </Label>
             <Input
-              id="date"
               type="date"
               value={selectedDate}
               onChange={(e) => setSelectedDate(e.target.value)}
               min={new Date().toISOString().split('T')[0]}
-              className="mt-1"
+              className="rounded-xl border-gray-200 py-3"
             />
           </div>
 
           <div>
-            <Label className="text-sm font-medium">
-              Horario preferido
-            </Label>
             <Select onValueChange={setSelectedTime}>
-              <SelectTrigger className="mt-1">
+              <SelectTrigger className="rounded-xl border-gray-200 py-3">
                 <SelectValue placeholder="Selecciona un horario" />
               </SelectTrigger>
               <SelectContent>
@@ -368,11 +294,9 @@ function ScheduleModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => vo
             </Select>
           </div>
 
-          <div className="bg-blue-ribbon-50 p-4 rounded-lg">
-            <h4 className="font-semibold text-blue-ribbon-700 mb-2">
-              En esta consulta gratuita:
-            </h4>
-            <ul className="text-sm text-blue-ribbon-600 space-y-1">
+          <div className="bg-blue-50 p-4 rounded-xl">
+            <h4 className="font-semibold text-blue-800 mb-2 text-sm">En esta consulta gratuita:</h4>
+            <ul className="text-xs text-blue-700 space-y-1">
               <li>• Analizaremos tu situación actual</li>
               <li>• Identificaremos oportunidades de mejora</li>
               <li>• Te mostraremos casos de éxito similares</li>
@@ -380,25 +304,18 @@ function ScheduleModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => vo
             </ul>
           </div>
 
-          <div className="flex gap-3">
+          <div className="flex gap-3 pt-2">
             <Button
               onClick={handleSchedule}
-              className="flex-1 bg-blue-ribbon-700 hover:bg-blue-ribbon-800 transition-all duration-200"
-              disabled={isSubmitting}
+              disabled={!selectedDate || !selectedTime || isSubmitting}
+              className="flex-1 bg-blue-600 hover:bg-blue-700 rounded-xl py-3 font-medium"
             >
-              {isSubmitting ? (
-                <div className="flex items-center">
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                  Agendando...
-                </div>
-              ) : (
-                "Confirmar cita"
-              )}
+              {isSubmitting ? "Confirmando..." : "Confirmar cita"}
             </Button>
             <Button
               variant="outline"
               onClick={onClose}
-              disabled={isSubmitting}
+              className="rounded-xl px-4"
             >
               Cancelar
             </Button>
@@ -470,70 +387,57 @@ function StageDetailsModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+      <DialogContent className="max-w-md rounded-2xl">
         <DialogHeader>
-          <div className={`bg-gradient-to-r ${stage.color} text-white p-6 -m-6 mb-6 rounded-t-lg`}>
+          <div className={`bg-gradient-to-r ${stage.color} text-white p-4 -m-6 mb-4 rounded-t-2xl`}>
             <div>
-              <Badge className="bg-white/20 text-white border-0 mb-3">
+              <Badge className="bg-white/20 text-white border-0 mb-2 text-xs">
                 Etapa {stageNumber}
               </Badge>
-              <DialogTitle className="text-2xl font-bold mb-2">
+              <DialogTitle className="text-lg font-bold mb-1">
                 {stage.title}
               </DialogTitle>
-              <p className="text-blue-ribbon-100 text-lg">
+              <p className="text-blue-ribbon-100 text-sm">
                 {stage.subtitle}
               </p>
             </div>
           </div>
         </DialogHeader>
 
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">
+        <div className="space-y-3">
+          <h3 className="text-sm font-semibold text-gray-900 mb-3">
             Todas las acciones incluidas en este sprint:
           </h3>
 
-          <div className="space-y-3">
+          <div className="space-y-2">
             {stage.actions.map((action, index) => (
-              <div key={index} className="flex items-start p-4 bg-gray-50 rounded-lg border border-gray-200">
-                <div className="flex-shrink-0 w-8 h-8 bg-blue-ribbon-100 rounded-full flex items-center justify-center mr-4">
-                  <span className="text-blue-ribbon-700 font-semibold text-sm">
-                    {index + 1}
-                  </span>
+              <div key={index} className="flex items-start space-x-3 p-3 bg-gray-50 rounded-xl">
+                <div className="flex-shrink-0 w-5 h-5 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs font-bold">
+                  {index + 1}
                 </div>
                 <div className="flex-1">
-                  <p className="text-gray-800 font-medium leading-relaxed">
-                    {action}
-                  </p>
+                  <p className="text-xs text-gray-800 font-medium leading-relaxed">{action}</p>
                 </div>
               </div>
             ))}
           </div>
 
-          <div className="mt-8 p-6 bg-blue-ribbon-50 rounded-lg border border-blue-ribbon-200">
-            <div className="flex items-center mb-3">
-              <CheckCircle className="h-5 w-5 text-blue-ribbon-600 mr-2" />
-              <h4 className="font-semibold text-blue-ribbon-800">
-                ¿Listo para implementar esta etapa?
-              </h4>
-            </div>
-            <p className="text-blue-ribbon-700 text-sm mb-4">
-              Cada acción está diseñada para maximizar resultados y generar un impacto medible en tu negocio.
-            </p>
+          <div className="mt-4 pt-3 border-t border-gray-200">
             <div className="flex gap-3">
               <Button
-                className="bg-blue-ribbon-700 hover:bg-blue-ribbon-800 text-white"
+                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white rounded-xl py-2 text-sm"
                 onClick={() => {
                   onClose();
                   // Aquí podrías abrir el modal de contacto o redirigir a WhatsApp
                 }}
               >
-                <MessageCircle className="h-4 w-4 mr-2" />
+                <MessageCircle className="h-3 w-3 mr-2" />
                 Consultar por esta etapa
               </Button>
               <Button
                 variant="outline"
-                className="border-blue-ribbon-300 text-blue-ribbon-700 hover:bg-blue-ribbon-50"
                 onClick={onClose}
+                className="rounded-xl px-4 text-sm"
               >
                 Cerrar
               </Button>
@@ -573,7 +477,7 @@ export default function Component() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-ribbon-950 via-blue-ribbon-800 to-blue-ribbon-950 font-sans">
+    <div className="min-h-screen bg-gradient-to-br from-blue-ribbon-950 via-blue-ribbon-800 to-blue-ribbon-950 font-sans overflow-x-hidden">
       {/* Skip Links for Accessibility */}
       <a
         href="#main-content"
@@ -582,7 +486,7 @@ export default function Component() {
         Saltar al contenido principal
       </a>
       {/* Header */}
-      <header className="bg-white/10 backdrop-blur-md border-b border-white/20 sticky top-0 z-50">
+      <header className="bg-white/10 backdrop-blur-md border-b border-white/20 sticky top-0 z-40">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <Image
@@ -684,10 +588,10 @@ export default function Component() {
       </header>
 
       {/* Bento Grid Layout */}
-      <main id="main-content" className="container mx-auto px-4 sm:px-6 py-4 sm:py-8 max-w-7xl">
+      <main id="main-content" className="container mx-auto px-4 sm:px-6 py-4 sm:py-8 max-w-7xl pb-24 sm:pb-8">
         {/* Hero Section - Large Card */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 mb-6 sm:mb-8">
-          <Card className="lg:col-span-9 bg-gradient-to-br from-blue-ribbon-700 to-blue-ribbon-800 text-white border-0 overflow-hidden relative animate-in fade-in slide-in-from-left duration-700 drop-shadow-2xl ring-1 ring-white/20">
+          <Card className="lg:col-span-9 bg-gradient-to-br from-blue-ribbon-700 to-blue-ribbon-800 text-white border-0 overflow-hidden relative animate-in fade-in slide-in-from-left duration-700 drop-shadow-2xl ring-1 ring-white/20 min-h-0">
             <CardContent className="p-6 sm:p-8 lg:p-12">
               <div className="relative z-10">
                 <Badge className="bg-secondary/20 text-secondary border-secondary/30 mb-4 ui-label">
@@ -711,10 +615,10 @@ export default function Component() {
                         {isClient ? (heroCTATest.config.buttonText || 'Quiero conocer el plan') : 'Quiero conocer el plan'}
                       </Button>
                     </DialogTrigger>
-                    <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+                    <DialogContent className="max-w-sm rounded-2xl">
                       <DialogHeader>
-                        <DialogTitle className="text-2xl font-bold text-blue-ribbon-700">
-                          Solicita tu Consulta Gratuita
+                        <DialogTitle className="text-lg font-bold text-blue-600">
+                          Consulta Gratuita
                         </DialogTitle>
                       </DialogHeader>
                       <ContactForm onClose={() => setIsContactModalOpen(false)} />
@@ -732,12 +636,12 @@ export default function Component() {
                   </Button>
                 </div>
               </div>
-              <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-32 translate-x-32"></div>
+              <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-32 translate-x-16 overflow-hidden"></div>
             </CardContent>
           </Card>
 
-          <Card className="lg:col-span-3 bg-gradient-to-br from-secondary to-secondary/80 text-accent border-0 animate-in fade-in slide-in-from-right duration-700 delay-200 drop-shadow-lg">
-            <CardContent className="p-4 h-full flex flex-col justify-center">
+          <Card className="lg:col-span-3 bg-gradient-to-br from-secondary to-secondary/80 text-accent border-0 animate-in fade-in slide-in-from-right duration-700 delay-200 drop-shadow-lg min-h-0">
+            <CardContent className="p-4 h-full flex flex-col justify-center min-h-[200px] lg:min-h-0">
               <div className="text-center">
                 <Globe className="h-12 w-12 mx-auto mb-3 text-accent" />
                 <h3 className="text-2xl font-bold mb-1">+85%</h3>
@@ -758,13 +662,13 @@ export default function Component() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-5xl mx-auto px-4 sm:px-0">
             {getServicesByOrder().map((service, index) => {
               const IconComponent = service.icon === 'Megaphone' ? Megaphone :
                                   service.icon === 'Target' ? Target : Heart
               return (
                 <div key={service.id} className="relative">
-                  <Card className="bg-white/10 backdrop-blur-md border-white/20 text-white hover:bg-white/15 transition-all duration-300 cursor-pointer group hover:ring-1 hover:ring-secondary/30 hover:scale-102 hover:shadow-lg">
+                  <Card className="bg-white/10 backdrop-blur-md border-white/20 text-white hover:bg-white/15 transition-all duration-300 cursor-pointer group hover:ring-1 hover:ring-secondary/30 hover:scale-102 hover:shadow-lg w-full">
                     <CardContent className="p-6 text-center">
                       <div className="flex items-center justify-center mb-4">
                         <div className="bg-secondary/20 rounded-full p-3 group-hover:bg-secondary/30 transition-colors">
@@ -916,16 +820,18 @@ export default function Component() {
           </div>
 
           {/* Botón para ver detalles completos - al final de la sección */}
-          <div className="text-center mt-12">
+          <div className="text-center mt-12 px-4">
             <Button
               size="lg"
-              className="bg-secondary hover:bg-secondary/90 text-accent font-bold text-lg py-6 px-8 shadow-2xl hover:shadow-secondary/25 transition-all duration-300 hover:scale-105 ring-2 ring-secondary/30 hover:ring-secondary/50"
+              className="bg-secondary hover:bg-secondary/90 text-accent font-bold text-base sm:text-lg py-6 px-6 sm:px-8 shadow-2xl hover:shadow-secondary/25 transition-all duration-300 hover:scale-105 ring-2 ring-secondary/30 hover:ring-secondary/50 w-full sm:w-auto max-w-md sm:max-w-none"
               onClick={() => setIsContactModalOpen(true)}
             >
-              <Calendar className="mr-3 h-6 w-6" />
-              Quiero implementar este sistema completo
+              <Calendar className="mr-2 sm:mr-3 h-5 w-5 sm:h-6 sm:w-6 flex-shrink-0" />
+              <span className="text-center leading-tight">
+                Quiero implementar este<br className="sm:hidden" /> sistema completo
+              </span>
             </Button>
-            <p className="text-blue-ribbon-200 text-sm mt-3 font-medium">
+            <p className="text-blue-ribbon-200 text-sm mt-3 font-medium px-2">
               Consulta gratuita • Sin compromiso • Resultados garantizados
             </p>
           </div>
@@ -1240,17 +1146,17 @@ export default function Component() {
               </div>
 
               {/* Background decoration */}
-              <div className="absolute top-0 right-0 w-96 h-96 bg-secondary/5 rounded-full -translate-y-48 translate-x-48"></div>
-              <div className="absolute bottom-0 left-0 w-64 h-64 bg-white/5 rounded-full translate-y-32 -translate-x-32"></div>
+              <div className="absolute top-0 right-0 w-96 h-96 bg-secondary/5 rounded-full -translate-y-48 translate-x-24 overflow-hidden"></div>
+              <div className="absolute bottom-0 left-0 w-64 h-64 bg-white/5 rounded-full translate-y-32 -translate-x-16 overflow-hidden"></div>
             </CardContent>
           </Card>
         </section>
       </main>
 
       {/* CTA Fijo Móvil */}
-      <div className="fixed bottom-4 inset-x-4 sm:hidden z-50">
+      <div className="fixed bottom-4 left-4 right-4 sm:hidden z-50">
         <Button
-          className="w-full bg-cyan-600 text-white py-4 rounded-xl shadow-2xl hover:bg-cyan-700 transition-all duration-300 font-bold text-lg"
+          className="w-full bg-cyan-600 text-white py-4 rounded-xl shadow-2xl hover:bg-cyan-700 transition-all duration-300 font-bold text-lg backdrop-blur-sm"
           onClick={() => setIsContactModalOpen(true)}
         >
           <Calendar className="mr-2 h-5 w-5" />
@@ -1259,7 +1165,7 @@ export default function Component() {
       </div>
 
       {/* Footer */}
-      <footer className="bg-blue-ribbon-950 text-white py-12 px-4 mt-12 mb-20 sm:mb-0">
+      <footer className="bg-blue-ribbon-950 text-white py-12 px-4 mt-12 pb-24 sm:pb-12">
         <div className="container mx-auto max-w-6xl">
           <div className="grid md:grid-cols-4 gap-8">
             <div className="space-y-4">
